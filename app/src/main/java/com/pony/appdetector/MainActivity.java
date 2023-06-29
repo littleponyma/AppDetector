@@ -15,6 +15,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        StringBuilder sb =new StringBuilder();
+        AntiGuard antiGuard = new AntiGuard();
+        if (antiGuard.checkIsDebuggerConnected()) {
+            sb.append("Debugger connected\n");
+        }
+        if (antiGuard.isRoot()) {
+            sb.append("Rooted\n");
+        }
+        if (antiGuard.checkXposed()) {
+            sb.append("Xposed detected\n");
+        }
+        binding.tvTips.setText(sb.toString());
     }
 
 }

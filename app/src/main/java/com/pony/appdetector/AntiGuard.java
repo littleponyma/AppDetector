@@ -4,9 +4,6 @@ import java.io.File;
 import java.lang.reflect.Field;
 
 public class AntiGuard {
-    static {
-        System.loadLibrary("anti_guard");
-    }
 
     public AntiGuard() {
     }
@@ -25,28 +22,13 @@ public class AntiGuard {
      *
      * @return
      */
-    public boolean isRoot() {
-        return isSUExist()||isSu();//user版本，继续查su文件
+    public boolean checkRoot() {
+        return isSu();
     }
 
     private native boolean isSu();
 
-    private boolean isSUExist() {
-        File file = null;
-        String[] paths = {"/sbin/su",
-                "/system/bin/su",
-                "/system/xbin/su",
-                "/data/local/xbin/su",
-                "/data/local/bin/su",
-                "/system/sd/xbin/su",
-                "/system/bin/failsafe/su",
-                "/data/local/su"};
-        for (String path : paths) {
-            file = new File(path);
-            if (file.exists()) return true;
-        }
-        return false;
-    }
+
     private native boolean antiDebug();
     /**
      * 检查是否存在XP框架
@@ -141,4 +123,34 @@ public class AntiGuard {
      * which is packaged with this application.
      */
     public native String stringFromJNI();
+
+
+    public boolean checkMagisk() {
+        return checkMagisk2() || new File("/sbin/magisk").exists() || new File("/sbin/.magisk").exists() || new File("/data/adb/magisk").exists();
+    }
+
+    public native boolean checkMagisk2();
+
+    public boolean checkEmulator() {
+        return new File("/system/lib/libhoudini.so").exists() ||
+                new File("/system/lib64/libhoudini.so").exists() ||
+                new File("/system/bin/houdini64").exists() ||
+                new File("/system/bin/houdini").exists() ||
+                new File("/system/lib/libdroid4x.so").exists() ||
+                new File("/system/lib64/libdroid4x.so").exists() ||
+                new File("/system/bin/windroyed").exists() ||
+                new File("/system/bin/windroye").exists() ||
+                new File("/system/bin/ttVM_x86").exists() ||
+                new File("/system/bin/ttVM").exists() ||
+                new File("/system/bin/nox-prop").exists() ||
+                new File("/system/bin/microvirtd").exists() ||
+                new File("/system/bin/microvirt-prop").exists() ||
+                new File("/dev/vboxguest").exists() ||
+                new File("/dev/vboxuser").exists() ||
+                new File("/system/bin/androVM-prop").exists() ||
+                new File("/system/bin/androVM-vbox-sf").exists() ||
+                new File("/system/bin/androVM_setprop").exists() ||
+                new File("/system/bin/mount.vboxsf").exists() ||
+                new File("/system/lib/libdvm.so").exists();
+    }
 }
